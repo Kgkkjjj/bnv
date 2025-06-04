@@ -28,3 +28,15 @@ python -m bnv.train --output ./bnv_model --model distilgpt2 \
 ```
 
 The resulting model will be saved in the `./bnv_model` directory.
+
+## Generating text or code
+
+After training, use the `bnv.generate` module to produce text or code from
+your model. Provide the path to the saved model and a prompt:
+
+```bash
+python -m bnv.generate --model ./bnv_model --prompt "Write a Python function to add two numbers"
+```
+
+The generation speed depends on your hardware, so responses may take longer
+than a few milliseconds on typical machines.
