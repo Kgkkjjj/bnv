@@ -40,3 +40,32 @@ python -m bnv.generate --model ./bnv_model --prompt "Write a Python function to 
 
 The generation speed depends on your hardware, so responses may take longer
 than a few milliseconds on typical machines.
+
+## Capabilities
+
+The `bnv.capabilities` module exposes a set of helper functions built on top of
+the trained BNV model. These functions provide convenient prompts for common
+text and code tasks:
+
+1. `generate_text` – free‑form text generation
+2. `generate_code` – create code from a natural language description
+3. `summarize_text` – produce a concise summary of longer passages
+4. `translate_text` – translate text into another language
+5. `explain_code` – explain what a piece of code does
+6. `refactor_code` – suggest improvements for existing code
+7. `generate_docstring` – write docstrings for Python functions
+8. `answer_question` – respond to questions with optional context
+9. `autocomplete_code` – complete partially written code
+10. `commit_message` – draft a concise commit message from a diff
+11. `style_transfer` – rewrite text in a specified style
+12. `code_review` – provide a short code review with improvement tips
+
+Import the module and call these helpers after you have trained or downloaded a
+model:
+
+```python
+from bnv import capabilities
+
+text = capabilities.summarize_text("./bnv_model", "Long text to summarize")
+print(text)
+```
