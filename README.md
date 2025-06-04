@@ -59,6 +59,9 @@ text and code tasks:
 10. `commit_message` – draft a concise commit message from a diff
 11. `style_transfer` – rewrite text in a specified style
 12. `code_review` – provide a short code review with improvement tips
+13. `step_by_step_reasoning` – answer questions with detailed reasoning
+14. `plan_program` – outline a program before implementation
+15. `debug_reasoning` – walk through bug discovery and fixes
 
 Import the module and call these helpers after you have trained or downloaded a
 model:

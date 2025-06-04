@@ -84,3 +84,22 @@ def code_review(model_path: str, code: str, max_length: int = 200) -> str:
     """Provide a short code review."""
     prompt = f"Review the following code and suggest improvements:\n{code}\nReview:"
     return _generate(model_path, prompt, max_length)
+
+
+
+def step_by_step_reasoning(model_path: str, question: str, max_length: int = 200) -> str:
+    """Answer a question with step-by-step reasoning."""
+    prompt = f"Let's reason step by step to answer:\nQuestion: {question}\nReasoning:"
+    return _generate(model_path, prompt, max_length)
+
+
+def plan_program(model_path: str, description: str, max_length: int = 200) -> str:
+    """Generate a high-level plan for implementing a program."""
+    prompt = f"Provide a detailed plan for the following program:\n{description}\nPlan:"
+    return _generate(model_path, prompt, max_length)
+
+
+def debug_reasoning(model_path: str, code: str, max_length: int = 200) -> str:
+    """Explain the reasoning used to locate and fix bugs."""
+    prompt = f"Find bugs in the code and explain the reasoning:\n{code}\nReasoning:"
+    return _generate(model_path, prompt, max_length)
