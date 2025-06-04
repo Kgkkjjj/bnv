@@ -18,6 +18,7 @@ def load_text_and_code_datasets(
     train_ratio: float = 0.9,
     use_live_data: bool = False,
     wiki_topics: list[str] | None = None,
+    search_queries: list[str] | None = None,
 ) -> tuple[Dataset, Dataset]:
     """Load datasets for training.
 
@@ -25,7 +26,7 @@ def load_text_and_code_datasets(
     the packaged datasets.
     """
     if use_live_data:
-        samples = fetch_live_data(wiki_topics)
+        samples = fetch_live_data(wiki_topics, search_queries)
         combined = Dataset.from_dict({"text": samples})
     else:
         text_ds = load_dataset("wikitext", "wikitext-2-raw-v1", split="train")
@@ -53,11 +54,15 @@ def train(
     sample_prompt: str | None = None,
     use_live_data: bool = False,
     wiki_topics: list[str] | None = None,
+    search_queries: list[str] | None = None,
 ):
     tokenizer = AutoTokenizer.from_pretrained(model_name)
     tokenizer.pad_token = tokenizer.eos_token
     train_ds, eval_ds = load_text_and_code_datasets(
-        train_ratio, use_live_data=use_live_data, wiki_topics=wiki_topics
+        train_ratio,
+        use_live_data=use_live_data,
+        wiki_topics=wiki_topics,
+        search_queries=search_queries,
     )
     tokenized_train = tokenize_dataset(tokenizer, train_ds)
     tokenized_eval = tokenize_dataset(tokenizer, eval_ds)
@@ -125,6 +130,12 @@ def main(argv: List[str] | None = None) -> None:
         default=["Artificial_intelligence"],
         help="Topics for Wikipedia summaries when using live data",
     )
+    parser.add_argument(
+        "--search-queries",
+        nargs="*",
+        default=[],
+        help="Search queries to include when fetching live data",
+    )
     args = parser.parse_args(argv)
     train(
         output_dir=args.output,
@@ -135,6 +146,7 @@ def main(argv: List[str] | None = None) -> None:
         sample_prompt=args.sample_prompt,
         use_live_data=args.use_live_data,
         wiki_topics=args.wiki_topics,
+        search_queries=args.search_queries,
     )
 
 

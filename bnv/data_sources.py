@@ -54,12 +54,27 @@ def fetch_weather(latitude: float, longitude: float) -> str:
     return f"Current temperature: {temp}°C"
 
 
-def fetch_live_data(topics: list[str] | None = None) -> list[str]:
+def fetch_search_results(query: str) -> str:
+    """Return a short snippet for the given search query using DuckDuckGo."""
+    url = "https://api.duckduckgo.com/"
+    params = {"q": query, "format": "json", "no_redirect": 1, "no_html": 1}
+    resp = requests.get(url, params=params, headers={"User-Agent": USER_AGENT}, timeout=10)
+    resp.raise_for_status()
+    data = resp.json()
+    snippet = data.get("AbstractText") or data.get("Answer", "")
+    if not snippet and data.get("RelatedTopics"):
+        snippet = data["RelatedTopics"][0].get("Text", "")
+    return snippet
+
+
+def fetch_live_data(topics: list[str] | None = None, search_queries: list[str] | None = None) -> list[str]:
     """Collect text samples from several open APIs."""
     topics = topics or ["Artificial_intelligence"]
     samples = []
     for topic in topics:
         samples.append(fetch_wikipedia_summary(topic))
+    for query in search_queries or []:
+        samples.append(fetch_search_results(query))
     samples.append(fetch_random_quote())
     samples.append(fetch_random_activity())
     samples.append(fetch_random_user())

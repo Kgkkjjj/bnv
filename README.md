@@ -34,14 +34,17 @@ The resulting model will be saved in the `./bnv_model` directory.
 
 If you do not have local datasets, you can train using text fetched from
 several open APIs. Enable this with the `--use-live-data` flag. You can also
-specify Wikipedia topics used for the summaries:
+specify Wikipedia topics used for the summaries and search queries to gather
+web snippets:
 
 ```bash
-python -m bnv.train --use-live-data --wiki-topics Machine_learning Python
+python -m bnv.train --use-live-data --wiki-topics Machine_learning Python \
+    --search-queries "latest AI news" "open source llm"
 ```
 
 This downloads short passages from Wikipedia along with samples from the
-Quotable, Bored, RandomUser and Open‑Meteo APIs to create a small training set.
+Quotable, Bored, RandomUser, Open‑Meteo and DuckDuckGo APIs to create a small
+training set.
 
 ## Generating text or code
 
@@ -90,6 +93,6 @@ print(text)
 ### Data sources
 
 The `bnv.data_sources` module provides helper functions for retrieving text
-from free APIs, including Wikipedia, Quotable, Bored, RandomUser and
-Open‑Meteo. These functions are used when training with the `--use-live-data`
-flag but can also be called directly.
+from free APIs, including Wikipedia, Quotable, Bored, RandomUser,
+Open‑Meteo and DuckDuckGo search. These functions are used when training with
+the `--use-live-data` flag but can also be called directly.
