@@ -11,8 +11,10 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import List
 
+import requests
+
 import imageio.v2 as imageio
-from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
+from transformers import AutoModelForCausalLM, AutoTokenizer
 from diffusers import StableDiffusionPipeline
 
 
@@ -71,6 +73,34 @@ class MultiModalModel:
         imageio.mimsave(path, frames, fps=fps)
         return str(path)
 
+    # --- Live data helper methods ---
+    def fetch_wikipedia_summary(self, topic: str) -> str:
+        """Return a short summary from Wikipedia."""
+        url = f"https://en.wikipedia.org/api/rest_v1/page/summary/{topic}"
+        resp = requests.get(url, timeout=10)
+        resp.raise_for_status()
+        return resp.json().get("extract", "")
+
+    def fetch_random_quote(self) -> str:
+        """Return a random quote from the Quotable API."""
+        resp = requests.get("https://api.quotable.io/random", timeout=10)
+        resp.raise_for_status()
+        return resp.json().get("content", "")
+
+    def fetch_weather(self, latitude: float, longitude: float) -> str:
+        """Retrieve a simple weather report from Open-Meteo."""
+        url = (
+            "https://api.open-meteo.com/v1/forecast?latitude="
+            f"{latitude}&longitude={longitude}&current=temperature_2m"
+        )
+        resp = requests.get(url, timeout=10)
+        resp.raise_for_status()
+        data = resp.json()
+        temp = data.get("current", {}).get("temperature_2m")
+        if temp is None:
+            return ""
+        return f"Current temperature: {temp}°C"
+
 
 def main() -> None:
     model = MultiModalModel.load()
@@ -78,6 +108,9 @@ def main() -> None:
     print(model.generate_code("a function that adds two numbers"))
     print("Image saved to", model.generate_image("A scenic landscape"))
     print("Video saved to", model.generate_video("A moving square"))
+    print("Quote:", model.fetch_random_quote())
+    print("Wiki:", model.fetch_wikipedia_summary("Artificial_intelligence"))
+    print("Weather:", model.fetch_weather(35.0, 139.0))
 
 
 if __name__ == "__main__":
